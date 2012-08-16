@@ -22,6 +22,7 @@
 
 #include "vtkCommonDataModelModule.h" // For export macro
 #include "vtkImageData.h"
+#include "vtkSmartPointer.h" // for irvars
 
 class vtkEmptyCell;
 class vtkStructuredVisibilityConstraint;
@@ -107,11 +108,6 @@ public:
   //ETX
 
   // Description:
-  // Shallow and Deep copy.
-  virtual void ShallowCopy(vtkDataObject *src);
-  virtual void DeepCopy(vtkDataObject *src);
-
-  // Description:
   // Methods for supporting blanking of cells. Blanking turns on or off
   // points in the structured grid, and hence the cells connected to them.
   // These methods should be called only after the dimensions of the
@@ -132,34 +128,35 @@ public:
   virtual void UnBlankCell( const int i, const int j, const int k );
 
   // Description:
-  // Get the array that defines the blanking (visibility) of each point.
-  virtual vtkUnsignedCharArray *GetPointVisibilityArray();
+  // Get the array that defines the ghost type of each cell.
+  vtkUnsignedCharArray* GetCellGhostArray();
 
   // Description:
-  // Set an array that defines the (blanking) visibility of the points
+  // Get the array that defines the ghost type of each point.
+  vtkUnsignedCharArray* GetPointGhostArray();
+
+  // Description:
+  // Allocate ghost array for cells
+  virtual void AllocateCellGhostArray();
+
+  // Description:
+  // Allocate ghost array for points
+  virtual void AllocatePointGhostArray();
+
+  // Description:
+  // Set an array that defines the ghost properties of the cells
   // in the grid. Make sure that length of the visibility array matches
   // the number of points in the grid.
-  virtual void SetPointVisibilityArray(vtkUnsignedCharArray *pointVisibility);
+  // WARNING: this method will rename the input arrray
+  virtual void SetCellGhostArray(vtkUnsignedCharArray *ghosts);
 
   // Description:
-  // Get the array that defines the blanking (visibility) of each cell.
-  virtual vtkUnsignedCharArray *GetCellVisibilityArray();
-
-  // Description:
-  // Set an array that defines the (blanking) visibility of the cells
+  // Set an array that defines the ghost properties of the cells
   // in the grid. Make sure that length of the visibility array matches
   // the number of points in the grid.
-  virtual void SetCellVisibilityArray(vtkUnsignedCharArray *pointVisibility);
+  // WARNING: this method will rename the input arrray
+  virtual void SetPointGhostArray(vtkUnsignedCharArray *ghosts);
 
-  // Description:
-  // Attaches the CellVisibility array to the Cell data.
-  // Used primarily for debugging.
-  virtual void AttachCellVisibilityToCellData( );
-
-  // Description:
-  // Attaches the PointVisibility arry to the Point data.
-  // Used primarily for debugging.
-  virtual void AttachPointVisibilityToPointData( );
 
   // Description:
   // Return non-zero value if specified point is visible.
@@ -172,16 +169,6 @@ public:
   // These methods should be called only after the dimensions of the
   // grid are set.
   virtual unsigned char IsCellVisible(vtkIdType cellId);
-
-  // Description:
-  // Returns 1 if there is any visibility constraint on the points,
-  // 0 otherwise.
-  virtual unsigned char GetPointBlanking();
-
-  // Description:
-  // Returns 1 if there is any visibility constraint on the cells,
-  // 0 otherwise.
-  virtual unsigned char GetCellBlanking();
 
   virtual vtkImageData* NewImageDataCopy();
 
@@ -204,17 +191,11 @@ protected:
   // Override this method because of blanking.
   virtual void ComputeScalarRange();
 
-  vtkStructuredVisibilityConstraint* PointVisibility;
-
-  void SetPointVisibility(vtkStructuredVisibilityConstraint *pointVisibility);
-  vtkGetObjectMacro(PointVisibility, vtkStructuredVisibilityConstraint);
-
-  vtkStructuredVisibilityConstraint* CellVisibility;
-
-  void SetCellVisibility(vtkStructuredVisibilityConstraint *cellVisibility);
-  vtkGetObjectMacro(CellVisibility, vtkStructuredVisibilityConstraint);
+  vtkSmartPointer<vtkUnsignedCharArray> CellGhostArray; //this points to the ghost array in cell data, if there is any
+  vtkSmartPointer<vtkUnsignedCharArray> PointGhostArray; //this points to the ghost array in point data, if there is any
 
   vtkEmptyCell* GetEmptyCell();
+
 
 private:
   vtkUniformGrid(const vtkUniformGrid&);  // Not implemented.

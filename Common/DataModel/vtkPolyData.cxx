@@ -1894,7 +1894,7 @@ void vtkPolyData::RemoveGhostCells(int level)
   vtkIdType *pts=0;
 
   // Get a pointer to the cell ghost level array.
-  vtkDataArray* temp = this->CellData->GetArray("vtkGhostLevels");
+  vtkDataArray* temp = this->CellData->GetArray(vtkDataSetAttributes::GhostArrayName());
   if (temp == NULL)
     {
     vtkDebugMacro("Could not find cell ghost level array.");
@@ -1921,7 +1921,7 @@ void vtkPolyData::RemoveGhostCells(int level)
     newVerts->Allocate(this->Verts->GetSize());
     for (this->Verts->InitTraversal(); this->Verts->GetNextCell(npts, pts); )
       {
-      if (int(cellGhostLevels[inCellId]) < level)
+      if (int(cellGhostLevels[inCellId]) ==0)
         { // Keep the cell.
         newVerts->InsertNextCell(npts, pts);
         newCellData->CopyData(this->CellData, inCellId, outCellId);

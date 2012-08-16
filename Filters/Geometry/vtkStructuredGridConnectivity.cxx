@@ -1187,8 +1187,11 @@ void vtkStructuredGridConnectivity::CreateGhostedMaskArrays(const int gridID)
           vtkIdType srcidx =
               vtkStructuredData::ComputePointIdForExtent(
                           gridExtent,ijk,this->DataDescription);
-          p = this->GridPointGhostArrays[gridID]->GetValue( srcidx );
-          this->GhostedPointGhostArray[gridID]->SetValue(idx, p);
+          if(this->GridPointGhostArrays[gridID])
+            {
+            p = this->GridPointGhostArrays[gridID]->GetValue( srcidx );
+            this->GhostedPointGhostArray[gridID]->SetValue(idx, p);
+            }
           }
         else
           {

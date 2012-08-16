@@ -36,6 +36,7 @@
 #include "vtkWedge.h"
 #include "vtkIncrementalPointLocator.h"
 
+
 vtkStandardNewMacro(vtkGeometryFilter);
 vtkCxxSetObjectMacro(vtkGeometryFilter, Locator, vtkIncrementalPointLocator)
 
@@ -147,10 +148,10 @@ int vtkGeometryFilter::RequestData(
   vtkPointData *outputPD = output->GetPointData();
   vtkCellData *outputCD = output->GetCellData();
   // ghost cell stuff
-  unsigned char  updateLevel =
-    static_cast<unsigned char>(
-      outInfo->Get(
-        vtkStreamingDemandDrivenPipeline::UPDATE_NUMBER_OF_GHOST_LEVELS()));
+  // unsigned char  updateLevel =
+  //   static_cast<unsigned char>(
+  //     outInfo->Get(
+  //       vtkStreamingDemandDrivenPipeline::UPDATE_NUMBER_OF_GHOST_LEVELS()));
   unsigned char  *cellGhostLevels = NULL;
 
   if (numCells == 0)
@@ -278,7 +279,7 @@ int vtkGeometryFilter::RequestData(
       }
 
     // Handle ghost cells here.  Another option was used cellVis array.
-    if (cellGhostLevels && cellGhostLevels[cellId] > updateLevel)
+    if (cellGhostLevels && cellGhostLevels[cellId] > 0)
       { // Do not create surfaces in outer ghost cells.
       continue;
       }
@@ -463,9 +464,9 @@ void vtkGeometryFilter::PolyDataExecute(vtkDataSet *dataSetInput,
   int visible, type;
   double x[3];
   // ghost cell stuff
-  unsigned char updateLevel =static_cast<unsigned char>
-    (outInfo->Get(
-      vtkStreamingDemandDrivenPipeline::UPDATE_NUMBER_OF_GHOST_LEVELS()));
+  // unsigned char updateLevel =static_cast<unsigned char>
+  //   (outInfo->Get(
+  //     vtkStreamingDemandDrivenPipeline::UPDATE_NUMBER_OF_GHOST_LEVELS()));
   unsigned char *cellGhostLevels = 0;
 
   vtkDebugMacro(<<"Executing geometry filter for poly data input");
@@ -473,7 +474,7 @@ void vtkGeometryFilter::PolyDataExecute(vtkDataSet *dataSetInput,
   vtkDataArray* temp = 0;
   if (cd)
     {
-    temp = cd->GetArray("vtkGhostLevels");
+    temp = cd->GetArray(vtkDataSetAttributes::GhostArrayName());
     }
   if ( (!temp) || (temp->GetDataType() != VTK_UNSIGNED_CHAR)
     || (temp->GetNumberOfComponents() != 1))
@@ -524,7 +525,7 @@ void vtkGeometryFilter::PolyDataExecute(vtkDataSet *dataSetInput,
       }
 
     // Handle ghost cells here.  Another option was used cellVis array.
-    if (cellGhostLevels && cellGhostLevels[cellId] > updateLevel)
+    if (cellGhostLevels && cellGhostLevels[cellId] > 0)
       { // Do not create surfaces in outer ghost cells.
       continue;
       }
@@ -606,9 +607,9 @@ void vtkGeometryFilter::UnstructuredGridExecute(vtkDataSet *dataSetInput,
   double x[3];
   int pixelConvert[4];
   // ghost cell stuff
-  unsigned char  updateLevel = static_cast<unsigned char>
-    (outInfo->Get(
-      vtkStreamingDemandDrivenPipeline::UPDATE_NUMBER_OF_GHOST_LEVELS()));
+  // unsigned char  updateLevel = static_cast<unsigned char>
+  //   (outInfo->Get(
+  //     vtkStreamingDemandDrivenPipeline::UPDATE_NUMBER_OF_GHOST_LEVELS()));
   unsigned char  *cellGhostLevels = 0;
 
   pixelConvert[0] = 0;
@@ -621,7 +622,7 @@ void vtkGeometryFilter::UnstructuredGridExecute(vtkDataSet *dataSetInput,
   vtkDataArray* temp = 0;
   if (cd)
     {
-    temp = cd->GetArray("vtkGhostLevels");
+    temp = cd->GetArray(vtkDataSetAttributes::GhostArrayName());
     }
   if ( (!temp) || (temp->GetDataType() != VTK_UNSIGNED_CHAR)
     || (temp->GetNumberOfComponents() != 1))
@@ -719,7 +720,7 @@ void vtkGeometryFilter::UnstructuredGridExecute(vtkDataSet *dataSetInput,
       }
 
     // Handle ghost cells here.  Another option was used cellVis array.
-    if (cellGhostLevels && cellGhostLevels[cellId] > updateLevel)
+    if (cellGhostLevels && cellGhostLevels[cellId] > 0)
       { // Do not create surfaces in outer ghost cells.
       continue;
       }
@@ -1057,7 +1058,7 @@ void vtkGeometryFilter::UnstructuredGridExecute(vtkDataSet *dataSetInput,
 //----------------------------------------------------------------------------
 void vtkGeometryFilter::StructuredGridExecute(vtkDataSet *dataSetInput,
                                               vtkPolyData *output,
-                                              vtkInformation *outInfo)
+                                              vtkInformation *)
 {
   vtkIdType cellId, newCellId;
   int i;
@@ -1079,9 +1080,9 @@ void vtkGeometryFilter::StructuredGridExecute(vtkDataSet *dataSetInput,
   vtkCellData *outputCD = output->GetCellData();
   vtkCellArray *cells;
   // ghost cell stuff
-  unsigned char  updateLevel =static_cast<unsigned char>
-    (outInfo->Get(
-      vtkStreamingDemandDrivenPipeline::UPDATE_NUMBER_OF_GHOST_LEVELS()));
+  // unsigned char  updateLevel =static_cast<unsigned char>
+  //   (outInfo->Get(
+  //     vtkStreamingDemandDrivenPipeline::UPDATE_NUMBER_OF_GHOST_LEVELS()));
   unsigned char  *cellGhostLevels = 0;
 
   cellIds = vtkIdList::New();
@@ -1094,7 +1095,7 @@ void vtkGeometryFilter::StructuredGridExecute(vtkDataSet *dataSetInput,
   vtkDataArray* temp = 0;
   if (cd)
     {
-    temp = cd->GetArray("vtkGhostLevels");
+    temp = cd->GetArray(vtkDataSetAttributes::GhostArrayName());
     }
   if ( (!temp) || (temp->GetDataType() != VTK_UNSIGNED_CHAR)
     || (temp->GetNumberOfComponents() != 1))
@@ -1177,7 +1178,7 @@ void vtkGeometryFilter::StructuredGridExecute(vtkDataSet *dataSetInput,
       }
 
     // Handle ghost cells here.  Another option was used cellVis array.
-    if (cellGhostLevels && cellGhostLevels[cellId] > updateLevel)
+    if (cellGhostLevels && cellGhostLevels[cellId] > 0)
       { // Do not create surfaces in outer ghost cells.
       continue;
       }

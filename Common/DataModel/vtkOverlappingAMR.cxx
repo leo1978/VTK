@@ -20,6 +20,7 @@
 #include "vtkUniformGrid.h"
 #include "vtkInformationIdTypeKey.h"
 #include "vtkCellData.h"
+#include "vtkDataSetAttributes.h"
 #include <vector>
 
 vtkStandardNewMacro(vtkOverlappingAMR);

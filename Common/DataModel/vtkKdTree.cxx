@@ -3054,12 +3054,12 @@ int vtkKdTree::NewGeometry(vtkDataSet **sets, int numSets)
           {
           newGeometry = 1;
           }
-        else if (ug->GetPointVisibilityArray()->GetMTime() >
+        else if (ug->GetPointGhostArray()->GetMTime() >
                  this->BuildTime)
           {
           newGeometry = 1;
           }
-        else if (ug->GetCellVisibilityArray()->GetMTime() >
+        else if (ug->GetCellGhostArray()->GetMTime() >
                  this->BuildTime)
           {
           newGeometry = 1;

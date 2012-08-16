@@ -60,10 +60,9 @@ namespace
       N = grid->GetNumberOfCells();
 
       vtkUnsignedCharArray* vis = vtkUnsignedCharArray::New();
-      vis->SetName("visibility");
       vis->SetNumberOfTuples( N );
-      vis->FillComponent(0,static_cast<char>(1));
-      grid->SetCellVisibilityArray(vis);
+      vis->FillComponent(0,'0');
+      grid->SetCellGhostArray(vis);
       vis->Delete();
 
       if (children.size() <= dataSetIdx)

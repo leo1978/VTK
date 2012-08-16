@@ -898,7 +898,7 @@ void vtkPStructuredGridConnectivity::SerializeDataArray(
           static_cast<int*>(dataArray->GetVoidPointer(0)), size );
       break;
     default:
-      vtkErrorMacro("Cannot serialize data array of this type");
+      vtkErrorMacro("Cannot serialize data array of type"<<dataArray->GetDataType());
     }
 }
 

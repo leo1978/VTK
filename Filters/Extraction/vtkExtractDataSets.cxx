@@ -145,7 +145,7 @@ int vtkExtractDataSets::RequestData(
       clone->ShallowCopy(inUG);
 
       // Remove blanking from output datasets.
-      clone->SetCellVisibilityArray(0);
+      clone->SetCellGhostArray(0);
       mpds->SetPiece( out_index, clone );
       clone->Delete();
       }

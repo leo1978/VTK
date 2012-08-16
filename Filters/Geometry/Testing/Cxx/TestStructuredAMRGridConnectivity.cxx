@@ -185,7 +185,7 @@ void AttachCellBlanking(vtkOverlappingAMR *amr)
         {
         vtkIdType numCells = grid->GetNumberOfCells();
 
-        vtkUnsignedCharArray *ghostArray = grid->GetCellVisibilityArray();
+        vtkUnsignedCharArray *ghostArray = grid->GetCellGhostArray();
         assert("pre: cell visibility is NULL" && (ghostArray != NULL) );
         unsigned char *ghostptr = ghostArray->GetPointer(0);
         assert("pre: ghostptr is NULL!" && (ghostptr != NULL) );
@@ -496,8 +496,8 @@ void RegisterGrids(
         GetGridExtent(idx,dim,ratio,ext);
         gridConnectivity->RegisterGrid(
             idx,levelIdx,ext,
-            grid->GetPointVisibilityArray(),
-            grid->GetCellVisibilityArray(),
+            grid->GetPointGhostArray(),
+            grid->GetCellGhostArray(),
             grid->GetPointData(),
             grid->GetCellData(),
             NULL);

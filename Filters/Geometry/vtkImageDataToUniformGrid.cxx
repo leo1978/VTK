@@ -230,11 +230,11 @@ int vtkImageDataToUniformGrid::Process(
 
   if(association == vtkDataObject::FIELD_ASSOCIATION_POINTS)
     {
-    output->SetPointVisibilityArray(blankingArray.GetPointer());
+    output->SetPointGhostArray(blankingArray.GetPointer());
     }
   else
     {
-    output->SetCellVisibilityArray(blankingArray.GetPointer());
+    output->SetCellGhostArray(blankingArray.GetPointer());
     }
 
   return VTK_OK;
